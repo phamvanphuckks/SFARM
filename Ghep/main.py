@@ -37,6 +37,7 @@ app = uic.loadUi("guis\\main.ui")
 #end
 
 
+# MQTT
 check = 1
 
 MQTT_HOST = '212.237.29.129'
@@ -68,7 +69,7 @@ def chang_status_RL(device, status): # thay đổi trạng thái của ảnh
         return -1
 
 def ctr_R1_bat():
-    GW.control_RL(1, 1) # GateWay(Xanh) điểu khienr Relay
+    GW.control_RL(1, 1) # GateWay(Xanh) điểu khien Relay - GW dinh nghia o dau the
     chang_status_RL("R1", 1)
     if (check_internet() == 1):
         get_status_all()
@@ -109,7 +110,7 @@ def UI_init(): # khởi tạo
                 check_device = port.device
                 break
         if (check_device != ''):
-            GW = Gateway(CONSTANT.GW_NAME)
+            GW = Gateway(CONSTANT.GW_NAME)   #Define GW kế thừa CONSTANT.GW_NAME
             # QMessageBox.information(
             #     app, "KẾT NỐI THÀNH CÔNG", "CHÀO MỪNG BẠN ĐẾN VỚI VƯỜN CỦA NHUNG ĐẠI KA")
             app.lbl_com.setText("ĐÃ KẾT NỐI " + check_device)
@@ -117,11 +118,11 @@ def UI_init(): # khởi tạo
             # GW.control_RL(2, 0)
         else:
             QMessageBox.critical(app, "LỖI KẾT NỐI",
-                                 "KHÔNG ĐÚNG THIẾT BỊ")
+                                      "KHÔNG ĐÚNG THIẾT BỊ")
             sys.exit()
     else:
         QMessageBox.critical(app, "LỖI KẾT NỐI",
-                             "KHÔNG CÓ COM NÀO ĐƯỢC KẾT NỐI")
+                                  "KHÔNG CÓ COM NÀO ĐƯỢC KẾT NỐI")
         sys.exit()
 
 def Lora_init():
@@ -137,15 +138,16 @@ def Lora_init():
                 break
         if (check_device != ''):
             GW1 = Gateway1(CONSTANT.GW1_NAME, 9600, 0.2)
+
             app.lbl_com.setText("ĐÃ KẾT NỐI "+str(check_device))
         else:
             print("Không đúng thiết bị!")
             QMessageBox.critical(app, "LỖI KẾT NỐI COM",
-                                 "KHÔNG ĐÚNG THIẾT BỊ!")
+                                      "KHÔNG ĐÚNG THIẾT BỊ!")
             sys.exit() # đóng phần mềm
     else:
         QMessageBox.critical(app, "LỖI KẾT NỐI COM",
-                             "KHÔNG CÓ COM NÀO KẾT NỐI!")
+                                  "KHÔNG CÓ COM NÀO KẾT NỐI!")
         sys.exit()
     try: # đưa GateWay(đỏ) vào mode nhận
         GW1.open()
@@ -159,7 +161,7 @@ def Lora_init():
         print(GW1.read_data())
     except:
         QMessageBox.critical(app, "LỖI KẾT NỐI COM",
-                             "KHÔNG THỂ KẾT NỐI")
+                                  "KHÔNG THỂ KẾT NỐI")
 
 def showTime():
     if (datetime.now().hour < 10):
@@ -238,8 +240,6 @@ def update_data(payload): # cập dữ liệu cho thanh progressBar
     app.progressBar_soil_3.setValue(
         int(float(payload['soil_2']['value'])))
     
-
-   
 
 def read_data():
     global check, GW1,client,GW,app
@@ -358,7 +358,9 @@ def get_status_all(): # lấy trạng thái hiện tại của các thiết bị
     }
     client.publish(MQTT_TOPIC_STATUS, json.dumps(payload_data)) # gửu cho a vững
 
-
+def requirePort():
+    GW_NAME  = input("Lua chon COM cho GateWay Xanh: ")
+    GW1_NAME = input("Lua chon COM cho GateWay Do: ")
     
 if __name__ == "__main__":
 
@@ -380,16 +382,16 @@ if __name__ == "__main__":
     GW.control_RL(2, 0)
     chang_status_RL("R2", 0)
 
-    if (check_internet() == True): # kiểm tra internet nếu có gửu cho a vững
-        client = mqtt.Client()
-        client.username_pw_set(MQTT_USER,MQTT_PWD)
-        client.connect(MQTT_HOST, 1883)
-        client.on_connect = on_connect
-        client.on_message = on_message
-        client.loop_start()
-        get_status_all()
-    else:
-        print("Khong co mang")
-    
+    # if (check_internet() == True): # kiểm tra internet nếu có gửu cho a vững
+    #     client = mqtt.Client()
+    #     client.username_pw_set(MQTT_USER,MQTT_PWD)
+    #     client.connect(MQTT_HOST, 1883)
+    #     client.on_connect = on_connect
+    #     client.on_message = on_message
+    #     client.loop_start()
+    #     get_status_all()
+    # else:
+    #     print("Khong co mang")
+
     app.show()
     sys.exit(App.exec())

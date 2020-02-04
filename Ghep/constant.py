@@ -26,6 +26,13 @@ RSSI = {
     "2": "TRUNG BÌNH",
     "1": "YẾU"
 }
+
+    
+
 TIME_OUT = 4000
-GW_NAME = "COM4"        # GateWay(Xanh) : thu dữ liệu của bọn đại việt và điều khiển máy bơm
-GW1_NAME = "COM3"       # GateWay(Đỏ) : thu dữ liệu từ cảm biến của mình
+GW_NAME  = "COM7"        # GateWay(Xanh) : thu dữ liệu của bọn đại việt và điều khiển máy bơm
+GW1_NAME = "COM8"       # GateWay(Đỏ) : thu dữ liệu từ cảm biến của mình
+
+'''
+    hướng phát triển : sử dụng input từ người dùng
+'''

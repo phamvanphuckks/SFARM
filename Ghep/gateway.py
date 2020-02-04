@@ -25,20 +25,22 @@ class Gateway():
         value = value.replace('0x', '')
         value = '0x'+value
         return int(value, 16)
-    # get number of node of Wriless
 
+
+# registeraddress- Search in file Modbus memmap of WR433 V1.9 : C:\Users\Pham Van Phuc\Desktop\SFARM-master
+    # get number of node of Wriless 
     def get_num_of_node(self):
         data = self.instrument.read_registers(
             registeraddress=272, number_of_registers=2, functioncode=3)
         value = self.convert_data(data)
         return value
-    # get id of node
+
+    # get id of node - do họ đặt
     ''' option:
         1: RELAY
         2: SOIL MOISTURE
         3: HUMIDITY
     '''
-
     def get_node_id(self, option):
         value = ''
         if (option == 1):
@@ -80,7 +82,10 @@ class Gateway():
             registeraddress=258, number_of_registers=1, functioncode=3)
         value = self.convert_data(data)
         return value
+# end file - Modbus memmap of WR433 V1.9
 
+
+# registeraddress : Template_WR433_V1.6:SFARM-master\Daviteq Modbus Configuration Tool Version 1.2
     # get main parmeter
     ''' option:
         1: RELAY
@@ -181,10 +186,11 @@ class Gateway():
                 return CONSTANT.RSSI[str(hi_byte)]
         else:
             return CONSTANT.RSSI[str(lo_byte)]
-            
-    # have 2 relay
-    # option: 1 or 2
-    # 1 is on 0 is off
+    '''
+        2 relay
+        option: 1 or 2
+        1 is on, 0 is off
+    '''
     def control_RL(self, option, status):
         if (option == 1):
             try:
