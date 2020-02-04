@@ -33,11 +33,10 @@ def load_data(): # load data
         now = datetime.now()
         timestamp = int(datetime.timestamp(now))
         now = datetime.fromtimestamp(timestamp)
-        payload = {
+        payload = { # xử lý string - để tách dữ liệu nhận được từ lora đỏ
             'LEN': Str[Str.find('LEN:') + len("LEN:"):Str.find(',', Str.find('LEN:') + len("LEN:"))],
             'RSSI': Str[Str.find('RSSI:') + len("RSSI:"):Str.find(',', Str.find('RSSI:') + len("RSSI:"))],
             'SNR': Str[Str.find("SNR:") + len("SNR:"):len(Str) - 2],
-            'DATA': bytes.fromhex(Str1[Str1.find("\"") +
-                                       1: Str1.find("\"", 1 + int(Str1.find("\"")))]).decode('utf-8'),
+            'DATA': bytes.fromhex(Str1[Str1.find("\"") + 1: Str1.find("\"", 1 + int(Str1.find("\"")))]).decode('utf-8'),
             'TIME': now}
         print(payload)

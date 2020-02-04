@@ -94,7 +94,7 @@ class Gateway():
     '''
     def get_main_parameter(self, option=1):
         if (option == 1):
-            data = self.instrument.read_float(
+            data = self.instrument.read_float( # ket qua la hex nhung chuyen sang float luon
                 registeraddress=41217, number_of_registers=2, functioncode=3)
             return round(data, 2)
         elif (option == 2):
@@ -106,6 +106,7 @@ class Gateway():
                 registeraddress=41729, number_of_registers=2, functioncode=3)
             return round(data, 2)
 
+# address in file memap of WS433-RL - C:\Users\Pham Van Phuc\Desktop\SFARM-master
     # get temperater of
     ''' option:
         1: RELAY

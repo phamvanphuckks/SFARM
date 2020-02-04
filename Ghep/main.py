@@ -32,10 +32,12 @@ App = QtWidgets.QApplication([])
 
 
 app = uic.loadUi("guis\\main.ui")
-# app.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+# app.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False) - khong tat dc ung
 
 #end
 
+GW_NAME = "COM3"
+GW1_NAME = "COM4"
 
 # MQTT
 check = 1
@@ -110,7 +112,8 @@ def UI_init(): # khởi tạo
                 check_device = port.device
                 break
         if (check_device != ''):
-            GW = Gateway(CONSTANT.GW_NAME)   #Define GW kế thừa CONSTANT.GW_NAME
+ #           GW = Gateway(CONSTANT.GW_NAME)   #Define GW kế thừa CONSTANT.GW_NAME
+            GW = Gateway(GW_NAME)
             # QMessageBox.information(
             #     app, "KẾT NỐI THÀNH CÔNG", "CHÀO MỪNG BẠN ĐẾN VỚI VƯỜN CỦA NHUNG ĐẠI KA")
             app.lbl_com.setText("ĐÃ KẾT NỐI " + check_device)
@@ -137,8 +140,8 @@ def Lora_init():
                 print(check_device)
                 break
         if (check_device != ''):
-            GW1 = Gateway1(CONSTANT.GW1_NAME, 9600, 0.2)
-
+ #           GW1 = Gateway1(CONSTANT.GW1_NAME, 9600, 0.2)
+            GW1 = Gateway1(GW1_NAME, 9600, 0.2)
             app.lbl_com.setText("ĐÃ KẾT NỐI "+str(check_device))
         else:
             print("Không đúng thiết bị!")
@@ -198,7 +201,7 @@ def status_data():
     
 def check_internet():
     try:
-        urllib.request.urlopen('http://google.com')  # Python 3.x-
+        urllib.request.urlopen('http://google.com', timeout=1)  # Python 3.x-
         return True
     except:
         return False
@@ -226,10 +229,13 @@ def on_message(client, userdata, msg):
     
 
 def closeEvent(event: QCloseEvent):
-    QMessageBox.critical(app, "LỖI NGUY HIỂM","KHÔNG NÊN TẮT PHẦN MỀM KHI KHÔNG CẦN THIẾT!!!\nNẾU TẮT PHẦN MỀM SẼ KHÔNG ĐỌC ĐƯỢC DỮ LIỆU CŨNG NHƯ GỬI DỮ LIỆU CHO SERVER!!\nMONG BẠN HÃY CÂN NHẮC!!")
+    QMessageBox.critical(app, "LỖI NGUY HIỂM","""KHÔNG NÊN TẮT PHẦN MỀM KHI KHÔNG CẦN THIẾT!!!\n
+                               NẾU TẮT PHẦN MỀM SẼ KHÔNG ĐỌC ĐƯỢC DỮ LIỆU CŨNG NHƯ GỬI DỮ LIỆU CHO SERVER!!\n
+                               MONG BẠN HÃY CÂN NHẮC!!""")
 
 def update_data(payload): # cập dữ liệu cho thanh progressBar
-    global app
+    global app            # Bao giờ con PH gửu lên, thì Các con cảm biến của Bên Daiviet mới được gửu lên
+                          # yêu cầu từ bên back-end
     app.progressBar_temp.setValue(int(payload['temp_1']['value']))
     app.progressBar_hum_1.setValue(int(payload['hum_1']['value']))
     app.progressBar_hum_2.setValue(
@@ -322,17 +328,14 @@ def read_data():
                 ctr_R1_bat()
             else:
                 ctr_R1_tat()
-            update_data(payload_1)
+            update_data(payload_1) #Cap nhap du lieu len man hinh 
             # if (int(float(payload_1['soil_2']['value'])) < 10):
             #     # print("Bat may bom")
             #     ctr_R1_bat()
             # else:
             #     # print("Tat may bom")
             #     ctr_R1_tat()
-            update_data(payload_1)
-
-            
-
+            #update_data(payload_1)
 
         if (check_internet() == True): # nếu có mạng gửu chuỗi cho a vững
             client.publish(MQTT_TOPIC_SEND,
@@ -359,11 +362,13 @@ def get_status_all(): # lấy trạng thái hiện tại của các thiết bị
     client.publish(MQTT_TOPIC_STATUS, json.dumps(payload_data)) # gửu cho a vững
 
 def requirePort():
+    global GW_NAME,GW1_NAME 
     GW_NAME  = input("Lua chon COM cho GateWay Xanh: ")
     GW1_NAME = input("Lua chon COM cho GateWay Do: ")
     
 if __name__ == "__main__":
 
+    requirePort()
     app.closeEvent = closeEvent # khi close, gọi sự kiện closeEvent
     Lora_init()
 
